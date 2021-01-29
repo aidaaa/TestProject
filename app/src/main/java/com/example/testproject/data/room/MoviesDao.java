@@ -30,6 +30,4 @@ public interface MoviesDao {
     @Query("SELECT EXISTS(SELECT * FROM movies_table)")
     LiveData<Boolean> isExists();
 
-    @Query("SELECT * FROM movies_table")
-    List<MoviesModel> getMovieByRX();
 }
