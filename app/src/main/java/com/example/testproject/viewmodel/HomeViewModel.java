@@ -28,9 +28,8 @@ public class HomeViewModel extends ViewModel {
         repo = MovieRepository.getInstance(application);
     }
 
-    public LiveData<Boolean> isExists()
-    {
-        exists=repo.isExists();
+    public LiveData<Boolean> isExists() {
+        exists = repo.isExists();
         return exists;
     }
 
@@ -45,8 +44,7 @@ public class HomeViewModel extends ViewModel {
         return genresLiveData;
     }
 
-    public  MutableLiveData<List<MovieData>> getMoviesLiveDataNet(boolean isExists)
-    {
+    public MutableLiveData<List<MovieData>> getMoviesLiveDataNet(boolean isExists) {
         moviesLiveDataNet = repo.getMoviesData(isExists);
         return moviesLiveDataNet;
     }

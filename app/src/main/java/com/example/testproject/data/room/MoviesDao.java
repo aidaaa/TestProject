@@ -1,6 +1,7 @@
 package com.example.testproject.data.room;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -29,4 +30,6 @@ public interface MoviesDao {
     @Query("SELECT EXISTS(SELECT * FROM movies_table)")
     LiveData<Boolean> isExists();
 
+    @Query("SELECT * FROM movies_table")
+    List<MoviesModel> getMovieByRX();
 }

@@ -18,6 +18,10 @@ import com.example.testproject.data.net.model.MoviesData;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.internal.observers.BlockingBaseObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -68,12 +72,46 @@ public class MovieRepository {
     }
 
     public void insertMovies(List<MovieData> moviesModels) {
-        new InsertMoviesAsyncTask(moviesDao).execute(moviesModels);
+        MutableLiveData<List<MoviesModel>> a=new MutableLiveData<>();
+        Observable.just("")
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(new BlockingBaseObserver<String>() {
+                    @Override
+                    public void onNext(@NonNull String s) {
+                        List<MoviesModel> models = new ArrayList<>();
+                        List<Genres> genres = new ArrayList<>();
+                        int index=0;
+                        for (int i = 0; i < moviesModels.size(); i++) {
+                            MoviesModel model = new MoviesModel();
+                            model.setId(moviesModels.get(i).getId() - 1);
+                            model.setTitle(moviesModels.get(i).getTitle());
+                            model.setPoster(moviesModels.get(i).getPoster());
+                            models.add(model);
+                            for (int k = 0; k < moviesModels.get(i).getGenres().size(); k++) {
+                                Genres gnrs = new Genres();
+                                gnrs.setId_genres(index);
+                                gnrs.setId(moviesModels.get(i).getId() - 1);
+                                gnrs.setGenres_name(moviesModels.get(i).getGenres().get(k));
+                                genres.add(gnrs);
+                                index++;
+                            }
+                        }
+                        moviesDao.insertMovie(models);
+                        moviesDao.insertGenres(genres);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+                });
+        //new InsertMoviesAsyncTask(moviesDao).execute(moviesModels);
   }
 
     public LiveData<List<MoviesModel>> selectMovie() {
         LiveData<List<MoviesModel>> listLiveData;
-        listLiveData = moviesDao.getAllMovies();
+        listLiveData=moviesDao.getAllMovies();
         return listLiveData;
     }
 
