@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/back_pl_item"
+        android:layout_margin="5dp">
+
+        <ImageView
+            android:id="@+id/img_movie"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:background="@drawable/back_pl_item" />
+
+        <TextView
+            android:id="@+id/txt_movies"
+            android:layout_width="252dp"
+            android:layout_height="34dp"
+            android:layout_below="@id/img_movie"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="-72dp"
+            android:layout_marginEnd="23dp"
+            android:layout_marginRight="23dp"
+            android:layout_toEndOf="@+id/img_movie"
+            android:layout_toRightOf="@+id/img_movie"
+            android:text="موزیک ویدیو تستی" />
+
+        <TextView
+            android:id="@+id/txt_genres"
+            android:layout_width="247dp"
+            android:layout_height="34dp"
+            android:layout_below="@+id/txt_movies"
+            android:layout_marginStart="33dp"
+            android:layout_marginLeft="33dp"
+            android:layout_marginTop="11dp"
+            android:layout_toEndOf="@+id/img_movie"
+            android:layout_toRightOf="@+id/img_movie"
+            android:text="موزیک ویدیو تستی" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
