@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView rv;
     MoviesAdapter adapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
