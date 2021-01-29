@@ -13,7 +13,7 @@ import com.example.testproject.data.room.model.MoviesModel;
 public abstract class MoviesDataBase extends RoomDatabase {
     private static MoviesDataBase instance;
 
-    public abstract MoviesDao setsDao();
+    public abstract MoviesDao moviesDao();
 
     public static synchronized MoviesDataBase getInstance(Context context){
         if (instance==null){

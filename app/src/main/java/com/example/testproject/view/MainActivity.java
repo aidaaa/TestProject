@@ -11,25 +11,18 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import com.example.testproject.R;
-import com.example.testproject.data.net.Api;
-import com.example.testproject.data.net.ApiService;
 import com.example.testproject.data.net.model.MovieData;
-import com.example.testproject.data.net.model.MoviesData;
 import com.example.testproject.data.room.model.Genres;
 import com.example.testproject.data.room.model.MoviesModel;
 import com.example.testproject.view.adapter.MoviesAdapter;
-import com.example.testproject.viewmodel.HomeViewModel;
+import com.example.testproject.viewmodel.MoviesViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class MainActivity extends AppCompatActivity {
 
-    private HomeViewModel viewModel;
+    private MoviesViewModel viewModel;
     RecyclerView rv;
     MoviesAdapter adapter;
 
@@ -40,14 +33,12 @@ public class MainActivity extends AppCompatActivity {
         rv = findViewById(R.id.rv);
 
         boolean isConnected = isNetworkConnected();
-        viewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
         viewModel.init(getApplication());
 
         if (isConnected) {
             viewModel.isExists();
-        }
-        else
-        {
+        } else {
             viewModel.getAllMovies();
             viewModel.getAllGenres();
         }

@@ -20,7 +20,8 @@ import java.util.List;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.internal.observers.BlockingBaseObserver;
+import io.reactivex.rxjava3.core.ObservableEmitter;
+import io.reactivex.rxjava3.core.ObservableOnSubscribe;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,7 +43,7 @@ public class MovieRepository {
 
     public MovieRepository(Application application) {
         MoviesDataBase moviesDataBase = MoviesDataBase.getInstance(application);
-        moviesDao = moviesDataBase.setsDao();
+        moviesDao = moviesDataBase.moviesDao();
         api = apiService.createHomeApiService().getRetrofit().create(Api.class);
     }
 
@@ -51,8 +52,11 @@ public class MovieRepository {
         api.getMovie(1).enqueue(new Callback<MoviesData>() {
             @Override
             public void onResponse(Call<MoviesData> call, Response<MoviesData> response) {
-                if(!isExists)
-                insertMovies(response.body().data);
+                if (!isExists) {
+                    insertMovies(response.body().data).subscribeOn(Schedulers.io())
+                            .observeOn(Schedulers.io())
+                            .subscribe();
+                }
                 mutableLiveData.postValue(response.body().data);
             }
 
@@ -64,54 +68,44 @@ public class MovieRepository {
         return mutableLiveData;
     }
 
-    public LiveData<Boolean> isExists()
-    {
+    public LiveData<Boolean> isExists() {
         LiveData<Boolean> exists;
-        exists=moviesDao.isExists();
+        exists = moviesDao.isExists();
         return exists;
     }
 
-    public void insertMovies(List<MovieData> moviesModels) {
-        MutableLiveData<List<MoviesModel>> a=new MutableLiveData<>();
-        Observable.just("")
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(new BlockingBaseObserver<String>() {
-                    @Override
-                    public void onNext(@NonNull String s) {
-                        List<MoviesModel> models = new ArrayList<>();
-                        List<Genres> genres = new ArrayList<>();
-                        int index=0;
-                        for (int i = 0; i < moviesModels.size(); i++) {
-                            MoviesModel model = new MoviesModel();
-                            model.setId(moviesModels.get(i).getId() - 1);
-                            model.setTitle(moviesModels.get(i).getTitle());
-                            model.setPoster(moviesModels.get(i).getPoster());
-                            models.add(model);
-                            for (int k = 0; k < moviesModels.get(i).getGenres().size(); k++) {
-                                Genres gnrs = new Genres();
-                                gnrs.setId_genres(index);
-                                gnrs.setId(moviesModels.get(i).getId() - 1);
-                                gnrs.setGenres_name(moviesModels.get(i).getGenres().get(k));
-                                genres.add(gnrs);
-                                index++;
-                            }
-                        }
-                        moviesDao.insertMovie(models);
-                        moviesDao.insertGenres(genres);
+    public Observable insertMovies(List<MovieData> moviesModels) {
+        return Observable.create(new ObservableOnSubscribe<Void>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<Void> emitter) throws Throwable {
+                List<MoviesModel> models = new ArrayList<>();
+                List<Genres> genres = new ArrayList<>();
+                int index = 0;
+                for (int i = 0; i < moviesModels.size(); i++) {
+                    MoviesModel model = new MoviesModel();
+                    model.setId(moviesModels.get(i).getId() - 1);
+                    model.setTitle(moviesModels.get(i).getTitle());
+                    model.setPoster(moviesModels.get(i).getPoster());
+                    models.add(model);
+                    for (int k = 0; k < moviesModels.get(i).getGenres().size(); k++) {
+                        Genres gnrs = new Genres();
+                        gnrs.setId_genres(index);
+                        gnrs.setId(moviesModels.get(i).getId() - 1);
+                        gnrs.setGenres_name(moviesModels.get(i).getGenres().get(k));
+                        genres.add(gnrs);
+                        index++;
                     }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-
-                    }
-                });
+                }
+                moviesDao.insertMovie(models);
+                moviesDao.insertGenres(genres);
+            }
+        });
         //new InsertMoviesAsyncTask(moviesDao).execute(moviesModels);
-  }
+    }
 
     public LiveData<List<MoviesModel>> selectMovie() {
         LiveData<List<MoviesModel>> listLiveData;
-        listLiveData=moviesDao.getAllMovies();
+        listLiveData = moviesDao.getAllMovies();
         return listLiveData;
     }
 
@@ -133,7 +127,7 @@ public class MovieRepository {
         protected Void doInBackground(List<MovieData>... moviesModels) {
             List<MoviesModel> models = new ArrayList<>();
             List<Genres> genres = new ArrayList<>();
-            int index=0;
+            int index = 0;
             for (int i = 0; i < moviesModels[0].size(); i++) {
                 MoviesModel model = new MoviesModel();
                 model.setId(moviesModels[0].get(i).getId() - 1);

@@ -13,7 +13,7 @@ import com.example.testproject.repository.MovieRepository;
 
 import java.util.List;
 
-public class HomeViewModel extends ViewModel {
+public class MoviesViewModel extends ViewModel {
 
     private LiveData<List<MoviesModel>> moviesLiveData;
     private LiveData<List<Genres>> genresLiveData;
