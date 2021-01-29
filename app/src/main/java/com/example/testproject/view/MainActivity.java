@@ -2,6 +2,7 @@ package com.example.testproject.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.testproject.R;
 import com.example.testproject.data.net.model.MovieData;
@@ -16,6 +18,7 @@ import com.example.testproject.data.room.model.Genres;
 import com.example.testproject.data.room.model.MoviesModel;
 import com.example.testproject.view.adapter.MoviesAdapter;
 import com.example.testproject.viewmodel.MoviesViewModel;
+import com.example.testproject.viewmodel.MoviesViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private MoviesViewModel viewModel;
     RecyclerView rv;
     MoviesAdapter adapter;
+    private MoviesViewModelFactory MoviesViewModelFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +37,10 @@ public class MainActivity extends AppCompatActivity {
         rv = findViewById(R.id.rv);
 
         boolean isConnected = isNetworkConnected();
-        viewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
+
+        //viewModel = new ViewModelProvider(this).get(MoviesViewModel.class);
+        viewModel = ViewModelProviders.of(this, MoviesViewModelFactory).get(MoviesViewModel.class);
+        Toast.makeText(this, "MoviesViewModel init", Toast.LENGTH_SHORT).show();
         viewModel.init(getApplication());
 
         if (isConnected) {
