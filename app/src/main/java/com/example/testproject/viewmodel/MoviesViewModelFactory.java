@@ -4,7 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-public class MoviesViewModelFactory implements ViewModelProvider.Factory {
+public class MoviesViewModelFactory implements ViewModelProvider.Factory
+{
 
     @NonNull
     @Override
